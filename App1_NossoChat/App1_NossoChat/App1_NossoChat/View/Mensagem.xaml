@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:util="clr-namespace:App1_NossoChat.Util"
+             x:Class="App1_NossoChat.View.Mensagem">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="minhasMensagensTemplate">
+                <ViewCell>
+                    <StackLayout Padding="5" Margin="5" BackgroundColor="#5ED055" HorizontalOptions="End">
+                        <Label Text="{Binding mensagem}" TextColor="White"/>
+                    </StackLayout>
+                </ViewCell>
+            </DataTemplate>
+            <DataTemplate x:Key="mensagensOutrasPessoasTemplate">
+                <ViewCell>
+                    <Frame OutlineColor="#5ED055" CornerRadius="0" Padding="5" Margin="5" HorizontalOptions="Start">
+                        <StackLayout>
+                            <Label Text="{Binding usuario.nome}" FontSize="10" />
+                            <Label Text="{Binding mensagem}" TextColor="#5ED055"/>
+                        </StackLayout>
+                    </Frame>
+                </ViewCell>
+            </DataTemplate>
+
+            <util:MensagemDataTemplateSelector 
+                x:Key="MensagemDataTemplateSelector"
+                MensagensOutrasPessoasTemplate="{StaticResource mensagensOutrasPessoasTemplate}" 
+                MinhasMensagensTemplate="{StaticResource minhasMensagensTemplate}" />
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Atualizar mensagens" Icon="refresh.png" Command="{Binding AtualizarCommand}"/>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <StackLayout>
+            <ListView ItemsSource="{Binding Mensagens}" HasUnevenRows="True" VerticalOptions="FillAndExpand" ItemTemplate="{StaticResource MensagemDataTemplateSelector}">
+
+            </ListView>
+            
+            <StackLayout Orientation="Horizontal" VerticalOptions="End">
+                <Entry Text="{Binding TxtMensagem}" Placeholder="Mensagem" BackgroundColor="White" 
+                        TextColor="#5ED055" HorizontalOptions="FillAndExpand"/>
+                <Button Command="{Binding BtnEnviarCommand}" Text="Enviar" TextColor="White" BackgroundColor="#5ED055"/>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
