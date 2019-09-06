@@ -36,16 +36,24 @@
         <ToolbarItem Text="Atualizar mensagens" Icon="refresh.png" Command="{Binding AtualizarCommand}"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <StackLayout>
-            <ListView ItemsSource="{Binding Mensagens}" HasUnevenRows="True" VerticalOptions="FillAndExpand" ItemTemplate="{StaticResource MensagemDataTemplateSelector}">
+        <AbsoluteLayout>
+            <StackLayout AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1">
+                <ListView ItemsSource="{Binding Mensagens}" HasUnevenRows="True" VerticalOptions="FillAndExpand" ItemTemplate="{StaticResource MensagemDataTemplateSelector}">
 
-            </ListView>
-            
-            <StackLayout Orientation="Horizontal" VerticalOptions="End">
-                <Entry Text="{Binding TxtMensagem}" Placeholder="Mensagem" BackgroundColor="White" 
+                </ListView>
+
+                <StackLayout Orientation="Horizontal" VerticalOptions="End">
+                    <Entry Text="{Binding TxtMensagem}" Placeholder="Mensagem" BackgroundColor="White" 
                         TextColor="#5ED055" HorizontalOptions="FillAndExpand"/>
-                <Button Command="{Binding BtnEnviarCommand}" Text="Enviar" TextColor="White" BackgroundColor="#5ED055"/>
+                    <Button Command="{Binding BtnEnviarCommand}" Text="Enviar" TextColor="White" BackgroundColor="#5ED055"/>
+                </StackLayout>
             </StackLayout>
-        </StackLayout>
+            <StackLayout BackgroundColor="#5ED055" AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1" IsVisible="False" x:Name="SLCarregando">
+                <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                    <ActivityIndicator IsRunning="True" Color="White" />
+                    <Label TextColor="White" Text="Carregando mensagens..."/>
+                </StackLayout>
+            </StackLayout>
+        </AbsoluteLayout>
     </ContentPage.Content>
 </ContentPage>
