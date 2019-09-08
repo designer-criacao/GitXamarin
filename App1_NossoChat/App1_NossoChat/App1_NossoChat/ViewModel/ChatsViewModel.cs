@@ -6,6 +6,7 @@ using System.ComponentModel;
 using App1_NossoChat.Model;
 using App1_NossoChat.Service;
 using Xamarin.Forms;
+using System.Threading.Tasks;
 
 namespace App1_NossoChat.ViewModel
 {
@@ -16,6 +17,27 @@ namespace App1_NossoChat.ViewModel
         {
             get { return _chats; }
             set { _chats = value; OnPropertyChanged("Chats"); }
+        }
+
+        private bool _carregando;
+        public bool Carregando
+        {
+            get { return _carregando; }
+            set
+            {
+                _carregando = value;
+                OnPropertyChanged("Carregando");
+            }
+        }
+        private bool _mensagemErro;
+        public bool MensagemErro
+        {
+            get { return _mensagemErro; }
+            set
+            {
+                _mensagemErro = value;
+                OnPropertyChanged("MensagemErro");
+            }
         }
 
         private Chat _selectedItemChat;
@@ -44,11 +66,27 @@ namespace App1_NossoChat.ViewModel
 
         public ChatsViewModel()
         {
-            Chats = ServiceWS.GetChats();
+            Task.Run(() => CarregarChats());
 
             AdicionarCommand = new Command(Adicionar);
             OrdenarCommand = new Command(Ordenar);
             AtualizarCommand = new Command(Atualizar);
+        }
+
+        private async Task CarregarChats()
+        {
+            try
+            {
+                MensagemErro = false;
+                Carregando = true;
+                Chats = await ServiceWS.GetChats();
+                Carregando = false;
+            }
+            catch(Exception e)
+            {
+                Carregando = false;
+                MensagemErro = true;
+            }
         }
 
         private void Adicionar()
@@ -61,7 +99,7 @@ namespace App1_NossoChat.ViewModel
         }
         private void Atualizar()
         {
-            Chats = ServiceWS.GetChats();
+            CarregarChats();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

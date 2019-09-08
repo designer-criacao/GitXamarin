@@ -108,6 +108,7 @@
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\adicionar.png" />
     <AndroidResource Include="Resources\drawable\chat.png" />
+    <AndroidResource Include="Resources\drawable\atualizar.png" />
     <Content Include="Resources\drawable\refresh.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

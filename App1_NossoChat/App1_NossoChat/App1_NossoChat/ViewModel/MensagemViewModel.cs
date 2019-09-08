@@ -6,15 +6,32 @@ using App1_NossoChat.Model;
 using App1_NossoChat.Service;
 using App1_NossoChat.Util;
 using Xamarin.Forms;
+using System.Threading.Tasks;
 
 namespace App1_NossoChat.ViewModel
 {
     public class MensagemViewModel : INotifyPropertyChanged
     {
-        //private StackLayout SL;
-        //UsuarioUtil.GetUsuarioLogado();
+        private bool _carregando;
+        private bool _mensagemErro;
         private Chat chat;
         private List<Mensagem> _mensagens;
+
+        public bool Carregando
+        {
+            get { return _carregando; }
+            set
+            {
+                _carregando = value;
+                OnPropertyChanged("Carregado");
+            }
+        }
+        public bool MensagemErro
+        {
+            get { return _mensagemErro; }
+            set { _mensagemErro = value; OnPropertyChanged("MensagemErro"); }
+        }
+
         public List<Mensagem> Mensagens
         {
             get { return _mensagens; }
@@ -42,18 +59,38 @@ namespace App1_NossoChat.ViewModel
         public MensagemViewModel(Chat chat)
         {
             this.chat = chat;
-            Atualizar();
+            Task.Run(() => Atualizar());
             BtnEnviarCommand = new Command(BtnEnviar);
-            AtualizarCommand = new Command(Atualizar);
+            AtualizarCommand = new Command(AtualizarSemAsync);
 
             Device.StartTimer(TimeSpan.FromSeconds(1), () => {
-                Atualizar();
+                Task.Run(() => AtualizarSemAsync());
                 return true;
             });
         }
-        private void Atualizar()
+        private void AtualizarSemAsync()
         {
-            Mensagens = ServiceWS.GetMensagensChat(chat);
+            Task.Run(() => Atualizar());
+        }
+        private async Task Atualizar()
+        {
+            try
+            {
+                MensagemErro = false;
+                Carregando = true;
+                Mensagens = await ServiceWS.GetMensagensChat(chat);
+                Carregando = false;
+            }
+            catch (Exception e)
+            {
+                Carregando = false;
+                MensagemErro = true;
+            }
+        }
+
+        private async Task AtualizarSemTelaCarregando()
+        {
+            Mensagens = await ServiceWS.GetMensagensChat(chat);
         }
 
         private void BtnEnviar()
@@ -65,7 +102,7 @@ namespace App1_NossoChat.ViewModel
                 id_chat = chat.id
             };
             ServiceWS.InsertMensagem(msg);
-            Atualizar();
+            Task.Run(() => Atualizar());
             TxtMensagem = string.Empty;
         }
         
